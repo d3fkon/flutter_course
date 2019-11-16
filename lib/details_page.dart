@@ -6,8 +6,11 @@ import 'data.dart';
 
 class DetailsPage extends StatefulWidget {
   final Movie movie;
+  final AddReviewCallback addReviewCallback;
 
-  const DetailsPage({Key key, @required this.movie}) : super(key: key);
+  const DetailsPage(
+      {Key key, @required this.movie, @required this.addReviewCallback})
+      : super(key: key);
 
   @override
   _DetailsPageState createState() => _DetailsPageState();
@@ -19,8 +22,13 @@ class _DetailsPageState extends State<DetailsPage> {
       TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500);
   final TextStyle reviewStyle =
       TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w300);
-  final TextStyle headingStyle =
-      TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.w400,);
+  final TextStyle headingStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 23,
+    fontWeight: FontWeight.w400,
+  );
+
+  var _textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -55,7 +63,8 @@ class _DetailsPageState extends State<DetailsPage> {
             children: <Widget>[
               _buildTitle(),
               _buildDescription(),
-              _buildReviews()
+              _buildReviews(),
+              _buildInputBox()
             ],
           ),
         ],
@@ -146,4 +155,29 @@ class _DetailsPageState extends State<DetailsPage> {
             color: Colors.black.withOpacity(0.5)),
         child: child,
       );
+
+  Widget _buildInputBox() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: _buildWithBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: _textEditingController,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: 'Add a review',
+              hintStyle: TextStyle(color: Colors.white),
+              border: InputBorder.none
+            ),
+            onSubmitted: (str) {
+              Review review = Review(review: str, author: 'Malcom X');
+              widget.addReviewCallback(movie, review);
+              _textEditingController.clear();
+            },
+          ),
+        ),
+      ),
+    );
+  }
 }

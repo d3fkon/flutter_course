@@ -27,6 +27,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  MovieDataProvider movieDataProvider;
+  List<Movie> movieData;
+
+  @override
+  void initState() {
+    super.initState();
+    movieDataProvider = MovieDataProvider();
+    movieData = movieDataProvider.movieData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,8 +49,11 @@ class _HomePageState extends State<HomePage> {
           return GestureDetector(
             onTap: () {
               // TODO: Navigate to detailsPage
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => DetailsPage(movie: movieData[i],)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => DetailsPage(
+                        movie: movieData[i],
+                        addReviewCallback: movieDataProvider.addReview,
+                      )));
             },
             child: MovieCard(
               imgUrl: movie.imgUrl,
@@ -59,13 +72,13 @@ class _HomePageState extends State<HomePage> {
 class MovieCard extends StatelessWidget {
   final String title, genre, brief, imgUrl;
 
-  const MovieCard(
-      {Key key,
-      @required this.imgUrl,
-      @required this.title,
-      @required this.genre,
-      @required this.brief})
-      : super(key: key);
+  const MovieCard({
+    Key key,
+    @required this.imgUrl,
+    @required this.title,
+    @required this.genre,
+    @required this.brief,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,10 +95,12 @@ class MovieCard extends StatelessWidget {
             children: <Widget>[
               Hero(
                 tag: imgUrl,
-                child: Image.network(imgUrl,
-                    width: screenSize.width / 2.7,
-                    height: screenSize.height / 4,
-                    fit: BoxFit.cover),
+                child: Image.network(
+                  imgUrl,
+                  width: screenSize.width / 2.7,
+                  height: screenSize.height / 4,
+                  fit: BoxFit.cover,
+                ),
               ),
               Expanded(
                 child: Padding(
